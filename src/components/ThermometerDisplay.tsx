@@ -20,6 +20,24 @@ const faces = [
 const RESULT_REVEAL_DELAY_MS = 900;
 const PDF_CAPTURE_WIDTH = 1600;
 const PDF_CAPTURE_HEIGHT = Math.round(PDF_CAPTURE_WIDTH / (297 / 210));
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+const normalizeLayoutConfig = (config: Partial<LayoutConfig> | null | undefined): LayoutConfig => {
+  const merged = { ...defaultLayoutConfig, ...(config ?? {}) };
+
+  return {
+    ...merged,
+    titleSize: clamp(Number(merged.titleSize) || defaultLayoutConfig.titleSize, 18, 30),
+    textSize: clamp(Number(merged.textSize) || defaultLayoutConfig.textSize, 12, 20),
+    iconSize: clamp(Number(merged.iconSize) || defaultLayoutConfig.iconSize, 18, 30),
+    spacingScale: clamp(Number(merged.spacingScale) || defaultLayoutConfig.spacingScale, 0.75, 1.2),
+    leftPanelWidth: clamp(Number(merged.leftPanelWidth) || defaultLayoutConfig.leftPanelWidth, 52, 68),
+    resultScale: clamp(Number(merged.resultScale) || defaultLayoutConfig.resultScale, 0.85, 1.05),
+    showFooterSummary: Boolean(merged.showFooterSummary),
+    showPresentationCards: Boolean(merged.showPresentationCards),
+    stackLeftCards: Boolean(merged.stackLeftCards),
+  };
+};
 
 const getFaceIndex = (percentage: number) => (
   percentage <= 25 ? 0 : percentage <= 50 ? 1 : percentage <= 75 ? 2 : 3
@@ -121,15 +139,18 @@ export default function ThermometerDisplay() {
   const [layoutConfig, setLayoutConfig] = useState<LayoutConfig>(() => {
     const saved = localStorage.getItem('thermometer_layout_config');
     if (!saved) {
-      return defaultLayoutConfig;
+      return normalizeLayoutConfig(defaultLayoutConfig);
     }
 
     try {
-      return { ...defaultLayoutConfig, ...JSON.parse(saved) };
+      return normalizeLayoutConfig(JSON.parse(saved));
     } catch {
-      return defaultLayoutConfig;
+      return normalizeLayoutConfig(defaultLayoutConfig);
     }
   });
+  const applyLayoutConfig = (nextConfig: LayoutConfig) => {
+    setLayoutConfig(normalizeLayoutConfig(nextConfig));
+  };
   const normalizedData = normalizeMetricData(data);
 
   useEffect(() => {
@@ -188,67 +209,67 @@ export default function ThermometerDisplay() {
  
   const slides: SlideConfig[] = [
     {
-      title: 'ðŸ‘¥ Membros da Igreja e Alunos Presentes',
+      title: 'Membros da Igreja e Alunos Presentes',
       pdfTitle: 'Membros e Alunos Presentes',
       description: 'Total de membros da igreja e alunos presentes.',
-      percentageLabel: 'Percentual de presenÃ§a',
+      percentageLabel: 'Percentual de presen\u00e7a',
       primaryLabel: 'Alunos presentes',
       primaryValue: String(normalizedData.membersPresent),
-      secondaryLabel: 'ðŸ‘¥ Membros da Igreja',
+      secondaryLabel: 'Membros da Igreja',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.membersPresent, normalizedData.totalMembers),
       fields: [
-        { key: 'totalMembers', label: 'ðŸ‘¥ Membros da Igreja', placeholder: '0' },
-        { key: 'membersPresent', label: 'ðŸ™‹ Alunos Presentes', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
+        { key: 'membersPresent', label: 'Alunos Presentes', placeholder: '0' },
       ],
     },
     {
-      title: 'ðŸ“– Estudaram a LiÃ§Ã£o',
-      pdfTitle: 'Estudaram a LiÃ§Ã£o',
+      title: 'Estudaram a Lição',
+      pdfTitle: 'Estudaram a Lição',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
       percentageLabel: 'Percentual de estudo',
       primaryLabel: 'Pessoas registradas',
       primaryValue: String(normalizedData.communion),
-      secondaryLabel: 'ðŸ‘¥ Membros da Igreja',
+      secondaryLabel: 'Membros da Igreja',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.communion, normalizedData.totalMembers),
       fields: [
-        { key: 'communion', label: 'ðŸ“– Estudaram a LiÃ§Ã£o', placeholder: '0' },
-        { key: 'totalMembers', label: 'ðŸ‘¥ Membros da Igreja', placeholder: '0' },
+        { key: 'communion', label: 'Estudaram a Lição', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
       ],
     },
     {
-      title: 'ðŸ  Participaram do PG (Pequeno Grupo)',
+      title: 'Participaram do PG (Pequeno Grupo)',
       pdfTitle: 'Participaram do PG',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
-      percentageLabel: 'Percentual de participaÃ§Ã£o',
+      percentageLabel: 'Percentual de participa\u00e7\u00e3o',
       primaryLabel: 'Participantes no PG',
       primaryValue: String(normalizedData.smallGroup),
-      secondaryLabel: 'ðŸ‘¥ Membros da Igreja',
+      secondaryLabel: 'Membros da Igreja',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.smallGroup, normalizedData.totalMembers),
       fields: [
-        { key: 'smallGroup', label: 'ðŸ  Participaram do PG (Pequeno Grupo)', placeholder: '0' },
-        { key: 'totalMembers', label: 'ðŸ‘¥ Membros da Igreja', placeholder: '0' },
+        { key: 'smallGroup', label: 'Participaram do PG (Pequeno Grupo)', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
       ],
     },
     {
-      title: 'ðŸ“š Deram Estudos BÃ­blicos',
-      pdfTitle: 'Deram Estudos BÃ­blicos',
+      title: 'Deram Estudos Bíblicos',
+      pdfTitle: 'Deram Estudos Bíblicos',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
       percentageLabel: 'Percentual de estudos',
-      primaryLabel: 'Estudos bÃ­blicos dados',
+      primaryLabel: 'Estudos bíblicos dados',
       primaryValue: String(normalizedData.biblicalStudies),
-      secondaryLabel: 'ðŸ‘¥ Membros da Igreja',
+      secondaryLabel: 'Membros da Igreja',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.biblicalStudies, normalizedData.totalMembers),
       fields: [
-        { key: 'biblicalStudies', label: 'ðŸ“š Deram Estudos BÃ­blicos', placeholder: '0' },
-        { key: 'totalMembers', label: 'ðŸ‘¥ Membros da Igreja', placeholder: '0' },
+        { key: 'biblicalStudies', label: 'Deram Estudos Bíblicos', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
       ],
     },
     {
-      title: 'ðŸ’° Ofertas',
+      title: 'Ofertas',
       pdfTitle: 'Ofertas',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
       percentageLabel: 'Percentual atingido',
@@ -258,8 +279,8 @@ export default function ThermometerDisplay() {
       secondaryValue: formatCurrency(normalizedData.weeklyGoal),
       percentage: getPercentage(normalizedData.weeklyAverage, normalizedData.weeklyGoal),
       fields: [
-        { key: 'weeklyAverage', label: 'ðŸ’° Ofertas (Atual)', placeholder: '0.00', prefix: 'R$' },
-        { key: 'weeklyGoal', label: 'ðŸ’° Ofertas (Alvo)', placeholder: '0.00', prefix: 'R$' },
+        { key: 'weeklyAverage', label: 'Ofertas (Atual)', placeholder: '0.00', prefix: 'R$' },
+        { key: 'weeklyGoal', label: 'Ofertas (Alvo)', placeholder: '0.00', prefix: 'R$' },
       ],
     },
   ];
@@ -603,10 +624,10 @@ export default function ThermometerDisplay() {
                 className="truncate font-bold tracking-tight text-slate-900"
                 style={{ fontSize: `${layoutConfig.titleSize}px` }}
               >
-                ðŸ“Š TermÃ´metro da Escola Sabatina
+                Termômetro da Escola Sabatina
               </h1>
               <p className="hidden text-sm text-slate-500 lg:block">
-                Painel em 5 slides com leitura rÃ¡pida, resultado visual e exportaÃ§Ã£o em PDF.
+                Painel em 5 slides com leitura rápida, resultado visual e exportação em PDF.
               </p>
             </div>
           </div>
@@ -625,7 +646,7 @@ export default function ThermometerDisplay() {
               onClick={() => setLayoutOpen(true)}
               className="flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-blue-600 md:px-4"
               aria-label="Ajustes de Layout"
-              title="Ajustar tamanho e espaÃ§amento"
+              title="Ajustar tamanho e espaçamento"
             >
               <SlidersHorizontal className="h-5 w-5 md:h-6 md:w-6" />
               <span className="font-medium">Ajustes</span>
@@ -633,8 +654,8 @@ export default function ThermometerDisplay() {
             <button
               onClick={togglePresentationMode}
               className="flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-blue-600 md:px-4"
-              aria-label="Entrar no modo apresentaÃ§Ã£o"
-              title="Entrar no modo apresentaÃ§Ã£o"
+              aria-label="Entrar no modo apresentação"
+              title="Entrar no modo apresentação"
             >
               <Maximize className="h-5 w-5 md:h-6 md:w-6" />
               <span className="font-medium">Tela Cheia</span>
@@ -642,10 +663,10 @@ export default function ThermometerDisplay() {
             <button
               onClick={() => setSettingsOpen(true)}
               className="flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-blue-600 md:px-4"
-              aria-label="ConfiguraÃ§Ãµes"
+              aria-label="Configurações"
             >
               <Settings className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="font-medium">ConfiguraÃ§Ãµes</span>
+              <span className="font-medium">Configurações</span>
             </button>
           </div>
         </div>
@@ -672,7 +693,7 @@ export default function ThermometerDisplay() {
               </button>
             )}
             <div
-              className="grid h-full min-h-0 grid-cols-1 xl:[grid-template-columns:var(--layout-columns)]"
+              className="grid h-full min-h-0 grid-cols-1 lg:[grid-template-columns:var(--layout-columns)]"
               style={presentationGridStyle}
             >
               <div
@@ -693,7 +714,7 @@ export default function ThermometerDisplay() {
                       </p>
                       <h2
                         className="mt-3 font-black leading-tight text-slate-900"
-                        style={{ fontSize: `${layoutConfig.titleSize * 1.45}px` }}
+                        style={{ fontSize: `${layoutConfig.titleSize * 1.25}px` }}
                       >
                         {activeSlide.title}
                       </h2>
@@ -847,7 +868,7 @@ export default function ThermometerDisplay() {
                       className="rounded-2xl bg-white/70 px-4 py-3 text-slate-500 shadow-sm"
                       style={isPresentationMode ? { padding: presentationCardPadding } : undefined}
                     >
-                      <div className="font-medium" style={{ fontSize: presentationMetaSize }}>Leitura rÃ¡pida</div>
+                      <div className="font-medium" style={{ fontSize: presentationMetaSize }}>Leitura rápida</div>
                       <div className="mt-1" style={{ fontSize: presentationBodySize }}>
                         {activeSlide.primaryLabel}: <span className="font-bold text-slate-900">{activeSlide.primaryValue}</span>
                       </div>
@@ -875,22 +896,22 @@ export default function ThermometerDisplay() {
       <footer className="flex-none border-t border-blue-100 bg-white/82 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-[1500px] flex-wrap gap-2 px-4 py-2 md:px-8">
           <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            ðŸ‘¥ Membros da Igreja: <span className="font-bold text-slate-900">{normalizedData.totalMembers}</span>
+            Membros da Igreja: <span className="font-bold text-slate-900">{normalizedData.totalMembers}</span>
           </div>
           <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            ðŸ™‹ Alunos Presentes: <span className="font-bold text-slate-900">{normalizedData.membersPresent}</span>
+            Alunos Presentes: <span className="font-bold text-slate-900">{normalizedData.membersPresent}</span>
           </div>
           <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            ðŸ“– Estudaram a LiÃ§Ã£o: <span className="font-bold text-slate-900">{normalizedData.communion}</span>
+            Estudaram a Lição: <span className="font-bold text-slate-900">{normalizedData.communion}</span>
           </div>
           <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
             Participaram do PG: <span className="font-bold text-slate-900">{normalizedData.smallGroup}</span>
           </div>
           <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            ðŸ“š Deram Estudos BÃ­blicos: <span className="font-bold text-slate-900">{normalizedData.biblicalStudies}</span>
+            Deram Estudos Bíblicos: <span className="font-bold text-slate-900">{normalizedData.biblicalStudies}</span>
           </div>
           <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            ðŸ’° Ofertas: <span className="font-bold text-slate-900">{formatCurrency(normalizedData.weeklyAverage)}</span> / {formatCurrency(normalizedData.weeklyGoal)}
+            Ofertas: <span className="font-bold text-slate-900">{formatCurrency(normalizedData.weeklyAverage)}</span> / {formatCurrency(normalizedData.weeklyGoal)}
           </div>
         </div>
       </footer>
@@ -911,9 +932,9 @@ export default function ThermometerDisplay() {
       {layoutOpen && (
         <LayoutSettingsModal
           config={layoutConfig}
-          setConfig={setLayoutConfig}
+          setConfig={applyLayoutConfig}
           onClose={() => setLayoutOpen(false)}
-          onReset={() => setLayoutConfig(defaultLayoutConfig)}
+          onReset={() => setLayoutConfig(normalizeLayoutConfig(defaultLayoutConfig))}
         />
       )}
     </div>

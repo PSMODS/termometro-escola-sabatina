@@ -11,12 +11,12 @@ export interface LayoutConfig {
 }
 
 export const defaultLayoutConfig: LayoutConfig = {
-  titleSize: 24,
-  textSize: 16,
-  iconSize: 24,
-  spacingScale: 1,
-  leftPanelWidth: 60,
-  resultScale: 1,
+  titleSize: 22,
+  textSize: 15,
+  iconSize: 22,
+  spacingScale: 0.9,
+  leftPanelWidth: 58,
+  resultScale: 0.95,
   showFooterSummary: true,
   showPresentationCards: true,
   stackLeftCards: false,
