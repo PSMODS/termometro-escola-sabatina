@@ -673,9 +673,9 @@ export default function ThermometerDisplay() {
       </header>
       )}
 
-      <main className="flex-1 min-h-0 overflow-hidden">
+      <main className={`flex-1 min-h-0 ${isPresentationMode ? 'overflow-hidden' : 'overflow-y-auto lg:overflow-hidden'}`}>
         <div className={`mx-auto flex h-full w-full ${isPresentationMode ? 'max-w-none px-0 py-0' : 'max-w-[1500px] px-4 py-3 md:px-8 md:py-4'} flex-col`}>
-          <section ref={slideCaptureRef} className={`relative flex-1 overflow-hidden ${isPresentationMode ? 'rounded-none border-0 bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_100%)] shadow-none' : 'rounded-[32px] border border-blue-100 bg-white/72 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.4)] backdrop-blur-xl'}`}>
+          <section ref={slideCaptureRef} className={`relative flex-1 ${isPresentationMode ? 'overflow-hidden rounded-none border-0 bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_100%)] shadow-none' : 'overflow-y-auto lg:overflow-hidden rounded-[32px] border border-blue-100 bg-white/72 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.4)] backdrop-blur-xl'}`}>
             {isPresentationMode && (
               <button
                 onClick={togglePresentationMode}
@@ -693,7 +693,7 @@ export default function ThermometerDisplay() {
               </button>
             )}
             <div
-              className="grid h-full min-h-0 grid-cols-1 lg:[grid-template-columns:var(--layout-columns)]"
+              className={`${isPresentationMode ? 'grid h-full min-h-0' : 'grid h-auto min-h-0 lg:h-full'} grid-cols-1 lg:[grid-template-columns:var(--layout-columns)]`}
               style={presentationGridStyle}
             >
               <div
