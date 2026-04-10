@@ -331,13 +331,13 @@ export default function ThermometerDisplay() {
   const presentationMetaSize = `${Math.max(layoutConfig.textSize * 0.75, 11)}px`;
   const presentationBodySize = `${Math.max(layoutConfig.textSize * 1.05, 16)}px`;
   const presentationButtonTextSize = `${Math.max(layoutConfig.textSize, 15)}px`;
-  const dashboardTitleSize = `${Math.max(layoutConfig.titleSize * 0.94, 20)}px`;
-  const dashboardSectionTitleSize = `${Math.max(layoutConfig.titleSize * 1.08, 24)}px`;
-  const dashboardValueSize = `${Math.max(layoutConfig.titleSize * 1.1, 24)}px`;
-  const dashboardHeroPercentSize = `${Math.max(layoutConfig.titleSize * 1.9 * resultScale, 40)}px`;
-  const dashboardBodySize = `${Math.max(layoutConfig.textSize, 14)}px`;
-  const dashboardMetaSize = `${Math.max(layoutConfig.textSize * 0.8, 12)}px`;
-  const dashboardButtonTextSize = `${Math.max(layoutConfig.textSize * 0.92, 14)}px`;
+  const dashboardTitleSize = `clamp(1.35rem, 4vw, ${Math.max(layoutConfig.titleSize * 0.94, 20)}px)`;
+  const dashboardSectionTitleSize = `clamp(1.45rem, 4.8vw, ${Math.max(layoutConfig.titleSize * 1.08, 24)}px)`;
+  const dashboardValueSize = `clamp(1.4rem, 5vw, ${Math.max(layoutConfig.titleSize * 1.1, 24)}px)`;
+  const dashboardHeroPercentSize = `clamp(2.4rem, 12vw, ${Math.max(layoutConfig.titleSize * 1.9 * resultScale, 40)}px)`;
+  const dashboardBodySize = `clamp(0.92rem, 2.9vw, ${Math.max(layoutConfig.textSize, 14)}px)`;
+  const dashboardMetaSize = `clamp(0.78rem, 2.4vw, ${Math.max(layoutConfig.textSize * 0.8, 12)}px)`;
+  const dashboardButtonTextSize = `clamp(0.88rem, 2.8vw, ${Math.max(layoutConfig.textSize * 0.92, 14)}px)`;
   const inputGridClassName = layoutConfig.stackLeftCards
     ? 'grid-cols-1'
     : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2';
@@ -438,7 +438,7 @@ export default function ThermometerDisplay() {
     >
       <label
         className="mb-3 block font-medium text-slate-500"
-        style={{ fontSize: `${layoutConfig.textSize}px` }}
+        style={{ fontSize: `clamp(0.88rem, 2.8vw, ${layoutConfig.textSize}px)` }}
       >
         {field.label}
       </label>
@@ -459,7 +459,7 @@ export default function ThermometerDisplay() {
             field.prefix ? 'pl-14' : ''
           }`}
           style={{
-            fontSize: `${layoutConfig.titleSize * 1.2}px`,
+            fontSize: `clamp(1.2rem, 6vw, ${layoutConfig.titleSize * 1.2}px)`,
             padding: `${layoutConfig.spacingScale * 0.8}rem`,
           }}
           placeholder={field.placeholder}
@@ -629,7 +629,7 @@ export default function ThermometerDisplay() {
   }
 
   return (
-    <div ref={rootRef} className="w-full h-[100dvh] flex flex-col bg-blue-50 overflow-hidden font-sans text-gray-800">
+    <div ref={rootRef} className="flex min-h-[100dvh] w-full flex-col overflow-x-hidden bg-blue-50 font-sans text-gray-800">
       <style>{`
         @keyframes thermoPulse { 0% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.02); } 100% { transform: translateY(0) scale(1);} }
         @keyframes heat { 0% { filter: saturate(1); } 50% { filter: saturate(1.2) brightness(1.03); } 100% { filter: saturate(1); } }
@@ -682,11 +682,11 @@ export default function ThermometerDisplay() {
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:flex-wrap xl:justify-end">
                 <button
                   onClick={downloadSlidesPdf}
                   disabled={isExportingPdf}
-                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl bg-blue-600 px-3 py-2 text-white transition-all duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 md:px-4"
+                  className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-3 py-2 text-center text-white transition-all duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 md:px-4 xl:w-auto"
                   aria-label={`Baixar PDF dos ${slides.length} slides`}
                   title={`Baixar PDF dos ${slides.length} slides`}
                   style={{ fontSize: dashboardButtonTextSize }}
@@ -696,7 +696,7 @@ export default function ThermometerDisplay() {
                 </button>
                 <button
                   onClick={() => setLayoutOpen(true)}
-                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4"
+                  className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-center text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4 xl:w-auto"
                   aria-label="Ajustes de Layout"
                   title="Ajustar tamanho e espaçamento"
                   style={{ fontSize: dashboardButtonTextSize }}
@@ -706,7 +706,7 @@ export default function ThermometerDisplay() {
                 </button>
                 <button
                   onClick={togglePresentationMode}
-                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4"
+                  className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-center text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4 xl:w-auto"
                   aria-label="Entrar no modo apresentação"
                   title="Entrar no modo apresentação"
                   style={{ fontSize: dashboardButtonTextSize }}
@@ -716,7 +716,7 @@ export default function ThermometerDisplay() {
                 </button>
                 <button
                   onClick={() => setSettingsOpen(true)}
-                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4"
+                  className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-center text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4 xl:w-auto"
                   aria-label="Configurações"
                   style={{ fontSize: dashboardButtonTextSize }}
                 >
@@ -729,9 +729,9 @@ export default function ThermometerDisplay() {
         </header>
       )}
 
-      <main className={`flex-1 min-h-0 ${isPresentationMode ? 'overflow-hidden' : 'overflow-y-auto xl:overflow-hidden'}`}>
+      <main className={`flex-1 min-h-0 ${isPresentationMode ? 'overflow-hidden' : 'overflow-y-auto'}`}>
         <div className={`mx-auto flex h-full w-full ${isPresentationMode ? 'max-w-none px-0 py-0' : 'max-w-[1500px] px-3 py-3 sm:px-5 sm:py-4 lg:px-8'} flex-col`}>
-          <section ref={slideCaptureRef} className={`relative flex-1 ${isPresentationMode ? 'overflow-hidden rounded-none border-0 bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_100%)] shadow-none' : 'overflow-y-auto xl:overflow-hidden rounded-[28px] border border-blue-100 bg-white/78 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.4)] backdrop-blur-xl'}`}>
+          <section ref={slideCaptureRef} className={`relative flex-1 ${isPresentationMode ? 'overflow-hidden rounded-none border-0 bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_100%)] shadow-none' : 'overflow-y-auto rounded-[24px] border border-blue-100 bg-white/78 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.4)] backdrop-blur-xl xl:overflow-hidden xl:rounded-[28px]'}`}>
             {isPresentationMode && (
               <button
                 onClick={togglePresentationMode}
@@ -821,7 +821,7 @@ export default function ThermometerDisplay() {
 
                   {!isPresentationMode && (
                     <>
-                      <div className="grid gap-3 lg:grid-cols-2">
+                      <div className="grid gap-3 sm:grid-cols-2">
                         <div className="rounded-[24px] border border-blue-100 bg-blue-50/70 p-4 shadow-[0_18px_50px_-36px_rgba(37,99,235,0.45)]">
                           <p className="font-medium text-slate-500" style={{ fontSize: dashboardMetaSize }}>
                             {activeSlide.primaryLabel}
@@ -839,7 +839,7 @@ export default function ThermometerDisplay() {
                           </div>
                         </div>
                       </div>
-                      <div className={`grid gap-3.5 ${inputGridClassName}`}>
+                      <div className={`grid gap-3 ${inputGridClassName}`}>
                         {activeSlide.fields.map(renderFieldInput)}
                       </div>
                     </>
@@ -1010,13 +1010,13 @@ export default function ThermometerDisplay() {
                       >
                         Leitura rápida
                       </div>
-                      <div style={{ fontSize: isPresentationMode ? presentationBodySize : dashboardBodySize }} className="mt-1">
+                      <div style={{ fontSize: isPresentationMode ? presentationBodySize : dashboardBodySize }} className="mt-1 break-words">
                         {activeSlide.primaryLabel}: <span className="font-bold text-slate-900">{activeSlide.primaryValue}</span>
                       </div>
                     </div>
                     <button
                       onClick={toggleShowResult}
-                      className={`w-full rounded-full px-7 py-3 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] md:w-auto ${
+                      className={`w-full rounded-full px-5 py-3 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] md:w-auto ${
                         showResult
                           ? 'bg-gradient-to-r from-slate-500 to-slate-600'
                           : 'animate-pulse-slow bg-gradient-to-r from-blue-600 to-blue-500'

@@ -64,9 +64,9 @@ export default function SettingsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white p-4 md:p-6">
-          <h2 className="text-2xl font-bold text-gray-800">Configuracoes</h2>
+      <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl sm:rounded-3xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white p-4 sm:p-5 md:p-6">
+          <h2 className="text-xl font-bold text-gray-800 sm:text-2xl">Configuracoes</h2>
           <button
             onClick={onClose}
             className="rounded-full p-2 transition-colors hover:bg-gray-100"
@@ -75,7 +75,7 @@ export default function SettingsModal({
           </button>
         </div>
 
-        <div className="space-y-8 p-6">
+        <div className="space-y-6 p-4 sm:space-y-8 sm:p-6">
           <div className="space-y-4">
             <h3 className="border-b border-blue-100 pb-2 text-lg font-semibold text-blue-900">
               Geral
@@ -181,7 +181,7 @@ export default function SettingsModal({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-600">
                     Ofertas (Meta)
@@ -212,14 +212,14 @@ export default function SettingsModal({
             <h3 className="border-b border-blue-100 pb-2 text-lg font-semibold text-blue-900">
               Gerenciamento de Dados
             </h3>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
               <button
                 onClick={exportData}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 font-medium text-white shadow-lg shadow-green-200 transition-colors hover:bg-green-700"
+                className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 text-center font-medium text-white shadow-lg shadow-green-200 transition-colors hover:bg-green-700"
               >
                 Exportar Dados (JSON)
               </button>
-              <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-medium text-white shadow-lg shadow-blue-200 transition-colors hover:bg-blue-700">
+              <label className="flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-center font-medium text-white shadow-lg shadow-blue-200 transition-colors hover:bg-blue-700">
                 Importar Dados (JSON)
                 <input
                   type="file"
@@ -235,7 +235,7 @@ export default function SettingsModal({
               </label>
               <button
                 onClick={copyWhatsappSummary}
-                className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 font-medium text-white shadow-lg shadow-emerald-200 transition-colors hover:bg-emerald-700 sm:col-span-2"
+                className="flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-center font-medium text-white shadow-lg shadow-emerald-200 transition-colors hover:bg-emerald-700 sm:col-span-2"
               >
                 {copyFeedback === 'success' ? 'Lista copiada para WhatsApp' : 'Copiar Lista para WhatsApp'}
               </button>
