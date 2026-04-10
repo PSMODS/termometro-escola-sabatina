@@ -7,6 +7,7 @@ export interface LayoutConfig {
   resultScale: number;
   showFooterSummary: boolean;
   showPresentationCards: boolean;
+  showProjectsSlide: boolean;
   stackLeftCards: boolean;
 }
 
@@ -19,5 +20,6 @@ export const defaultLayoutConfig: LayoutConfig = {
   resultScale: 0.95,
   showFooterSummary: true,
   showPresentationCards: true,
+  showProjectsSlide: true,
   stackLeftCards: false,
 };

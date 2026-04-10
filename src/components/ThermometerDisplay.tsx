@@ -35,6 +35,7 @@ const normalizeLayoutConfig = (config: Partial<LayoutConfig> | null | undefined)
     resultScale: clamp(Number(merged.resultScale) || defaultLayoutConfig.resultScale, 0.85, 1.05),
     showFooterSummary: Boolean(merged.showFooterSummary),
     showPresentationCards: Boolean(merged.showPresentationCards),
+    showProjectsSlide: Boolean(merged.showProjectsSlide),
     stackLeftCards: Boolean(merged.stackLeftCards),
   };
 };
@@ -89,6 +90,7 @@ interface SlideFieldConfig {
 }
 
 interface SlideConfig {
+  id: string;
   title: string;
   pdfTitle: string;
   description: string;
@@ -207,85 +209,110 @@ export default function ThermometerDisplay() {
 
   
  
-  const slides: SlideConfig[] = [
+  const baseSlides: SlideConfig[] = [
     {
-      title: 'Membros da Igreja e Alunos Presentes',
-      pdfTitle: 'Membros e Alunos Presentes',
-      description: 'Total de membros da igreja e alunos presentes.',
+      id: 'attendance',
+      title: 'Membros Matriculados e Presentes',
+      pdfTitle: 'Membros Matriculados e Presentes',
+      description: 'Comparativo entre membros matriculados e membros presentes.',
       percentageLabel: 'Percentual de presen\u00e7a',
-      primaryLabel: 'Alunos presentes',
+      primaryLabel: 'Membros presentes',
       primaryValue: String(normalizedData.membersPresent),
-      secondaryLabel: 'Membros da Igreja',
+      secondaryLabel: 'Membros matriculados',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.membersPresent, normalizedData.totalMembers),
       fields: [
-        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
-        { key: 'membersPresent', label: 'Alunos Presentes', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros Matriculados', placeholder: '0' },
+        { key: 'membersPresent', label: 'Membros Presentes', placeholder: '0' },
       ],
     },
     {
-      title: 'Estudaram a Lição',
-      pdfTitle: 'Estudaram a Lição',
+      id: 'communion',
+      title: 'Estudos Diários',
+      pdfTitle: 'Estudos Diários',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
-      percentageLabel: 'Percentual de estudo',
-      primaryLabel: 'Pessoas registradas',
+      percentageLabel: 'Percentual de participação',
+      primaryLabel: 'Estudos diários',
       primaryValue: String(normalizedData.communion),
-      secondaryLabel: 'Membros da Igreja',
+      secondaryLabel: 'Membros matriculados',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.communion, normalizedData.totalMembers),
       fields: [
-        { key: 'communion', label: 'Estudaram a Lição', placeholder: '0' },
-        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
+        { key: 'communion', label: 'Estudos Diários', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros Matriculados', placeholder: '0' },
       ],
     },
     {
-      title: 'Participaram do PG (Pequeno Grupo)',
-      pdfTitle: 'Participaram do PG',
+      id: 'small-group',
+      title: 'Pequenos Grupos',
+      pdfTitle: 'Pequenos Grupos',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
       percentageLabel: 'Percentual de participa\u00e7\u00e3o',
-      primaryLabel: 'Participantes no PG',
+      primaryLabel: 'Participantes em pequenos grupos',
       primaryValue: String(normalizedData.smallGroup),
-      secondaryLabel: 'Membros da Igreja',
+      secondaryLabel: 'Membros matriculados',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.smallGroup, normalizedData.totalMembers),
       fields: [
-        { key: 'smallGroup', label: 'Participaram do PG (Pequeno Grupo)', placeholder: '0' },
-        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
+        { key: 'smallGroup', label: 'Pequenos Grupos', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros Matriculados', placeholder: '0' },
       ],
     },
     {
-      title: 'Deram Estudos Bíblicos',
-      pdfTitle: 'Deram Estudos Bíblicos',
+      id: 'biblical-studies',
+      title: 'Estudos Bíblicos',
+      pdfTitle: 'Estudos Bíblicos',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
       percentageLabel: 'Percentual de estudos',
-      primaryLabel: 'Estudos bíblicos dados',
+      primaryLabel: 'Estudos bíblicos',
       primaryValue: String(normalizedData.biblicalStudies),
-      secondaryLabel: 'Membros da Igreja',
+      secondaryLabel: 'Membros matriculados',
       secondaryValue: String(normalizedData.totalMembers),
       percentage: getPercentage(normalizedData.biblicalStudies, normalizedData.totalMembers),
       fields: [
-        { key: 'biblicalStudies', label: 'Deram Estudos Bíblicos', placeholder: '0' },
-        { key: 'totalMembers', label: 'Membros da Igreja', placeholder: '0' },
+        { key: 'biblicalStudies', label: 'Estudos Bíblicos', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros Matriculados', placeholder: '0' },
       ],
     },
     {
+      id: 'projects',
+      title: 'Projetos Sociais',
+      pdfTitle: 'Projetos Sociais',
+      description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
+      percentageLabel: 'Percentual de participação',
+      primaryLabel: 'Participantes em projetos sociais',
+      primaryValue: String(normalizedData.projects),
+      secondaryLabel: 'Membros matriculados',
+      secondaryValue: String(normalizedData.totalMembers),
+      percentage: getPercentage(normalizedData.projects, normalizedData.totalMembers),
+      fields: [
+        { key: 'projects', label: 'Projetos Sociais', placeholder: '0' },
+        { key: 'totalMembers', label: 'Membros Matriculados', placeholder: '0' },
+      ],
+    },
+    {
+      id: 'offerings',
       title: 'Ofertas',
       pdfTitle: 'Ofertas',
       description: 'Resumo gerado automaticamente a partir dos dados atuais do painel.',
       percentageLabel: 'Percentual atingido',
       primaryLabel: 'Oferta atual',
       primaryValue: formatCurrency(normalizedData.weeklyAverage),
-      secondaryLabel: 'Alvo',
+      secondaryLabel: 'Meta',
       secondaryValue: formatCurrency(normalizedData.weeklyGoal),
       percentage: getPercentage(normalizedData.weeklyAverage, normalizedData.weeklyGoal),
       fields: [
         { key: 'weeklyAverage', label: 'Ofertas (Atual)', placeholder: '0.00', prefix: 'R$' },
-        { key: 'weeklyGoal', label: 'Ofertas (Alvo)', placeholder: '0.00', prefix: 'R$' },
+        { key: 'weeklyGoal', label: 'Ofertas (Meta)', placeholder: '0.00', prefix: 'R$' },
       ],
     },
   ];
 
-  const activeSlide = slides[currentSlide];
+  const slides = layoutConfig.showProjectsSlide
+    ? baseSlides
+    : baseSlides.filter((slide) => slide.id !== 'projects');
+  const safeCurrentSlide = Math.min(currentSlide, Math.max(slides.length - 1, 0));
+  const activeSlide = slides[safeCurrentSlide];
   const headerPercent = activeSlide.percentage;
   const headerAnimatedPercent = useAnimatedNumber(showResult ? headerPercent : 0, 800, percentDecimals, isExportingPdf);
   const headerFaceIndex = getFaceIndex(headerPercent);
@@ -304,9 +331,26 @@ export default function ThermometerDisplay() {
   const presentationMetaSize = `${Math.max(layoutConfig.textSize * 0.75, 11)}px`;
   const presentationBodySize = `${Math.max(layoutConfig.textSize * 1.05, 16)}px`;
   const presentationButtonTextSize = `${Math.max(layoutConfig.textSize, 15)}px`;
+  const dashboardTitleSize = `${Math.max(layoutConfig.titleSize * 0.94, 20)}px`;
+  const dashboardSectionTitleSize = `${Math.max(layoutConfig.titleSize * 1.08, 24)}px`;
+  const dashboardValueSize = `${Math.max(layoutConfig.titleSize * 1.1, 24)}px`;
+  const dashboardHeroPercentSize = `${Math.max(layoutConfig.titleSize * 1.9 * resultScale, 40)}px`;
+  const dashboardBodySize = `${Math.max(layoutConfig.textSize, 14)}px`;
+  const dashboardMetaSize = `${Math.max(layoutConfig.textSize * 0.8, 12)}px`;
+  const dashboardButtonTextSize = `${Math.max(layoutConfig.textSize * 0.92, 14)}px`;
+  const inputGridClassName = layoutConfig.stackLeftCards
+    ? 'grid-cols-1'
+    : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2';
   const presentationGridStyle = {
-    '--layout-columns': `minmax(460px, ${layoutConfig.leftPanelWidth}fr) minmax(320px, ${100 - layoutConfig.leftPanelWidth}fr)`,
+    '--layout-columns': `minmax(420px, ${layoutConfig.leftPanelWidth}fr) minmax(320px, ${100 - layoutConfig.leftPanelWidth}fr)`,
   } as CSSProperties;
+
+  useEffect(() => {
+    if (currentSlide !== safeCurrentSlide) {
+      setCurrentSlide(safeCurrentSlide);
+    }
+  }, [currentSlide, safeCurrentSlide]);
+
   const goToSlide = (direction: 'prev' | 'next') => {
     setShowResult(false);
     setFacesAnimating(false);
@@ -494,7 +538,7 @@ export default function ThermometerDisplay() {
   }, [showResult, facesAnimating, headerFaceIndex]);
 
   const downloadSlidesPdf = async () => {
-    const originalSlide = currentSlide;
+    const originalSlide = safeCurrentSlide;
     const originalShowResult = showResult;
 
     try {
@@ -609,79 +653,91 @@ export default function ThermometerDisplay() {
       `}</style>
       
       {!isPresentationMode && (
-      <header className="flex-none border-b border-blue-100 bg-white/85 backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-[1500px] flex-col gap-4 px-4 py-4 md:px-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex min-w-0 items-center gap-4">
-            <div className="rounded-2xl bg-blue-50 p-2 shadow-inner ring-1 ring-blue-100">
-              <img
-                src={escolaSabatinaLogo}
-                alt="Logo da Escola Sabatina"
-                className="h-10 w-10 object-contain md:h-12 md:w-12"
-              />
-            </div>
-            <div className="min-w-0">
-              <h1
-                className="truncate font-bold tracking-tight text-slate-900"
-                style={{ fontSize: `${layoutConfig.titleSize}px` }}
-              >
-                Termômetro da Escola Sabatina
-              </h1>
-              <p className="hidden text-sm text-slate-500 lg:block">
-                Painel em 5 slides com leitura rápida, resultado visual e exportação em PDF.
-              </p>
+        <header className="flex-none border-b border-blue-100 bg-white/85 backdrop-blur-xl">
+          <div className="mx-auto w-full max-w-[1500px] px-3 py-3 sm:px-5 sm:py-4 lg:px-8">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                <div className="rounded-2xl bg-blue-50 p-2 shadow-inner ring-1 ring-blue-100">
+                  <img
+                    src={escolaSabatinaLogo}
+                    alt="Logo da Escola Sabatina"
+                    className="h-10 w-10 object-contain md:h-12 md:w-12"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p
+                    className="font-semibold uppercase tracking-[0.22em] text-blue-600"
+                    style={{ fontSize: dashboardMetaSize }}
+                  >
+                    Painel da Escola Sabatina
+                  </p>
+                  <h1
+                    className="mt-1 font-bold leading-tight tracking-tight text-slate-900"
+                    style={{ fontSize: dashboardTitleSize }}
+                  >
+                    Termômetro da Escola Sabatina
+                  </h1>
+                  <p className="mt-1 max-w-2xl text-slate-500" style={{ fontSize: dashboardBodySize }}>
+                    Painel em {slides.length} slides com leitura rápida, resultado visual e exportação em PDF.
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+                <button
+                  onClick={downloadSlidesPdf}
+                  disabled={isExportingPdf}
+                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl bg-blue-600 px-3 py-2 text-white transition-all duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 md:px-4"
+                  aria-label={`Baixar PDF dos ${slides.length} slides`}
+                  title={`Baixar PDF dos ${slides.length} slides`}
+                  style={{ fontSize: dashboardButtonTextSize }}
+                >
+                  <Download className="h-5 w-5 md:h-6 md:w-6" />
+                  <span className="font-medium">{isExportingPdf ? 'Gerando PDF...' : 'Baixar PDF'}</span>
+                </button>
+                <button
+                  onClick={() => setLayoutOpen(true)}
+                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4"
+                  aria-label="Ajustes de Layout"
+                  title="Ajustar tamanho e espaçamento"
+                  style={{ fontSize: dashboardButtonTextSize }}
+                >
+                  <SlidersHorizontal className="h-5 w-5 md:h-6 md:w-6" />
+                  <span className="font-medium">Layout</span>
+                </button>
+                <button
+                  onClick={togglePresentationMode}
+                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4"
+                  aria-label="Entrar no modo apresentação"
+                  title="Entrar no modo apresentação"
+                  style={{ fontSize: dashboardButtonTextSize }}
+                >
+                  <Maximize className="h-5 w-5 md:h-6 md:w-6" />
+                  <span className="font-medium">Tela Cheia</span>
+                </button>
+                <button
+                  onClick={() => setSettingsOpen(true)}
+                  className="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-slate-600 transition-all duration-200 hover:border-blue-200 hover:bg-slate-50 hover:text-blue-600 md:px-4"
+                  aria-label="Configurações"
+                  style={{ fontSize: dashboardButtonTextSize }}
+                >
+                  <Settings className="h-5 w-5 md:h-6 md:w-6" />
+                  <span className="font-medium">Configurações</span>
+                </button>
+              </div>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={downloadSlidesPdf}
-              disabled={isExportingPdf}
-              className="flex items-center gap-2 rounded-full bg-blue-600 px-3 py-2 text-white transition-all duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 md:px-4"
-              aria-label="Baixar PDF dos 5 slides"
-              title="Baixar PDF dos 5 slides"
-            >
-              <Download className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="font-medium">{isExportingPdf ? 'Gerando PDF...' : 'Baixar PDF'}</span>
-            </button>
-            <button
-              onClick={() => setLayoutOpen(true)}
-              className="flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-blue-600 md:px-4"
-              aria-label="Ajustes de Layout"
-              title="Ajustar tamanho e espaçamento"
-            >
-              <SlidersHorizontal className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="font-medium">Ajustes</span>
-            </button>
-            <button
-              onClick={togglePresentationMode}
-              className="flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-blue-600 md:px-4"
-              aria-label="Entrar no modo apresentação"
-              title="Entrar no modo apresentação"
-            >
-              <Maximize className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="font-medium">Tela Cheia</span>
-            </button>
-            <button
-              onClick={() => setSettingsOpen(true)}
-              className="flex items-center gap-2 rounded-full px-3 py-2 text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-blue-600 md:px-4"
-              aria-label="Configurações"
-            >
-              <Settings className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="font-medium">Configurações</span>
-            </button>
-          </div>
-        </div>
-      </header>
+        </header>
       )}
 
-      <main className={`flex-1 min-h-0 ${isPresentationMode ? 'overflow-hidden' : 'overflow-y-auto lg:overflow-hidden'}`}>
-        <div className={`mx-auto flex h-full w-full ${isPresentationMode ? 'max-w-none px-0 py-0' : 'max-w-[1500px] px-4 py-3 md:px-8 md:py-4'} flex-col`}>
-          <section ref={slideCaptureRef} className={`relative flex-1 ${isPresentationMode ? 'overflow-hidden rounded-none border-0 bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_100%)] shadow-none' : 'overflow-y-auto lg:overflow-hidden rounded-[32px] border border-blue-100 bg-white/72 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.4)] backdrop-blur-xl'}`}>
+      <main className={`flex-1 min-h-0 ${isPresentationMode ? 'overflow-hidden' : 'overflow-y-auto xl:overflow-hidden'}`}>
+        <div className={`mx-auto flex h-full w-full ${isPresentationMode ? 'max-w-none px-0 py-0' : 'max-w-[1500px] px-3 py-3 sm:px-5 sm:py-4 lg:px-8'} flex-col`}>
+          <section ref={slideCaptureRef} className={`relative flex-1 ${isPresentationMode ? 'overflow-hidden rounded-none border-0 bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_100%)] shadow-none' : 'overflow-y-auto xl:overflow-hidden rounded-[28px] border border-blue-100 bg-white/78 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.4)] backdrop-blur-xl'}`}>
             {isPresentationMode && (
               <button
                 onClick={togglePresentationMode}
-                className="absolute z-20 flex items-center rounded-full bg-white/90 text-slate-700 shadow-lg transition-colors hover:bg-white"
+                className="absolute z-20 flex items-center rounded-full border border-white/60 bg-white/92 text-slate-700 shadow-lg transition-colors hover:bg-white"
                 style={{
-                  top: presentationSectionPadding,
+                  bottom: presentationSectionPadding,
                   right: presentationSectionPadding,
                   gap: `${presentationSpacing * 0.5}rem`,
                   padding: presentationButtonPadding,
@@ -689,60 +745,104 @@ export default function ThermometerDisplay() {
                 }}
               >
                 <Minimize style={{ width: presentationIconSize, height: presentationIconSize }} />
-                <span className="font-medium">Sair da Tela Cheia</span>
+                <span className="hidden font-medium sm:inline">Sair da Tela Cheia</span>
               </button>
             )}
             <div
-              className={`${isPresentationMode ? 'grid h-full min-h-0' : 'grid h-auto min-h-0 lg:h-full'} grid-cols-1 lg:[grid-template-columns:var(--layout-columns)]`}
+              className={`${isPresentationMode ? 'grid h-full min-h-0' : 'grid h-auto min-h-0 xl:h-full'} grid-cols-1 xl:[grid-template-columns:var(--layout-columns)]`}
               style={presentationGridStyle}
             >
               <div
-                className={`flex flex-col ${isPresentationMode ? 'border-b-0 xl:border-r' : 'border-b border-blue-100 p-5 md:p-6 xl:border-b-0 xl:border-r'}`}
+                className={`flex flex-col ${isPresentationMode ? 'border-b-0 xl:border-r' : 'border-b border-blue-100 p-4 sm:p-5 xl:border-b-0 xl:border-r xl:p-6'}`}
                 style={isPresentationMode ? { padding: presentationSectionPadding } : undefined}
               >
                 <div className="flex flex-col" style={isPresentationMode ? { gap: presentationGap } : undefined}>
                   <div
-                    className="flex flex-wrap items-start justify-between gap-4"
+                    className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
                     style={isPresentationMode ? { gap: presentationGap } : undefined}
                   >
                     <div className="min-w-0">
                       <p
                         className="font-semibold uppercase tracking-[0.35em] text-blue-500"
-                        style={{ fontSize: presentationMetaSize }}
+                        style={{ fontSize: isPresentationMode ? presentationMetaSize : dashboardMetaSize }}
                       >
-                        Slide {currentSlide + 1} de {slides.length}
+                        Slide {safeCurrentSlide + 1} de {slides.length}
                       </p>
                       <h2
-                        className="mt-3 font-black leading-tight text-slate-900"
-                        style={{ fontSize: `${layoutConfig.titleSize * 1.25}px` }}
+                        className="mt-2 font-black leading-tight text-slate-900"
+                        style={{ fontSize: isPresentationMode ? `${layoutConfig.titleSize * 1.25}px` : dashboardSectionTitleSize }}
                       >
                         {activeSlide.title}
                       </h2>
+                      <p
+                        className="mt-2 max-w-2xl text-slate-500"
+                        style={{ fontSize: isPresentationMode ? presentationBodySize : dashboardBodySize }}
+                      >
+                        {activeSlide.description}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 self-start rounded-2xl bg-slate-50/85 p-1.5 shadow-sm ring-1 ring-slate-100">
                       <button
                         onClick={prevSlide}
                         className="rounded-full border border-blue-100 p-3 text-blue-500 transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-30"
-                        style={isPresentationMode ? { width: presentationNavButtonSize, height: presentationNavButtonSize } : undefined}
-                        disabled={currentSlide === 0}
+                        style={
+                          isPresentationMode
+                            ? { width: presentationNavButtonSize, height: presentationNavButtonSize }
+                            : { width: '44px', height: '44px' }
+                        }
+                        disabled={safeCurrentSlide === 0}
                       >
-                        <ChevronLeft style={{ width: presentationIconSize, height: presentationIconSize }} />
+                        <ChevronLeft
+                          style={{
+                            width: isPresentationMode ? presentationIconSize : `${Math.max(layoutConfig.iconSize, 20)}px`,
+                            height: isPresentationMode ? presentationIconSize : `${Math.max(layoutConfig.iconSize, 20)}px`,
+                          }}
+                        />
                       </button>
                       <button
                         onClick={nextSlide}
                         className="rounded-full border border-blue-100 p-3 text-blue-500 transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-30"
-                        style={isPresentationMode ? { width: presentationNavButtonSize, height: presentationNavButtonSize } : undefined}
-                        disabled={currentSlide === slides.length - 1}
+                        style={
+                          isPresentationMode
+                            ? { width: presentationNavButtonSize, height: presentationNavButtonSize }
+                            : { width: '44px', height: '44px' }
+                        }
+                        disabled={safeCurrentSlide === slides.length - 1}
                       >
-                        <ChevronRight style={{ width: presentationIconSize, height: presentationIconSize }} />
+                        <ChevronRight
+                          style={{
+                            width: isPresentationMode ? presentationIconSize : `${Math.max(layoutConfig.iconSize, 20)}px`,
+                            height: isPresentationMode ? presentationIconSize : `${Math.max(layoutConfig.iconSize, 20)}px`,
+                          }}
+                        />
                       </button>
                     </div>
                   </div>
 
                   {!isPresentationMode && (
-                    <div className={`grid gap-3 ${layoutConfig.stackLeftCards ? 'grid-cols-1' : 'md:grid-cols-2'}`}>
-                      {activeSlide.fields.map(renderFieldInput)}
-                    </div>
+                    <>
+                      <div className="grid gap-3 lg:grid-cols-2">
+                        <div className="rounded-[24px] border border-blue-100 bg-blue-50/70 p-4 shadow-[0_18px_50px_-36px_rgba(37,99,235,0.45)]">
+                          <p className="font-medium text-slate-500" style={{ fontSize: dashboardMetaSize }}>
+                            {activeSlide.primaryLabel}
+                          </p>
+                          <div className="mt-2 font-black text-slate-900" style={{ fontSize: dashboardValueSize }}>
+                            {activeSlide.primaryValue}
+                          </div>
+                        </div>
+                        <div className="rounded-[24px] border border-blue-100 bg-white p-4 shadow-[0_18px_50px_-36px_rgba(37,99,235,0.35)]">
+                          <p className="font-medium text-slate-500" style={{ fontSize: dashboardMetaSize }}>
+                            {activeSlide.secondaryLabel}
+                          </p>
+                          <div className="mt-2 font-black text-slate-900" style={{ fontSize: dashboardValueSize }}>
+                            {activeSlide.secondaryValue}
+                          </div>
+                        </div>
+                      </div>
+                      <div className={`grid gap-3.5 ${inputGridClassName}`}>
+                        {activeSlide.fields.map(renderFieldInput)}
+                      </div>
+                    </>
                   )}
 
                 </div>
@@ -785,37 +885,55 @@ export default function ThermometerDisplay() {
               </div>
 
               <div
-                className={`flex flex-col ${isPresentationMode ? '' : 'p-5 md:p-6'}`}
+                className={`flex flex-col ${isPresentationMode ? '' : 'p-4 sm:p-5 xl:p-6'}`}
                 style={isPresentationMode ? { padding: presentationSectionPadding } : undefined}
               >
                 <div
-                  className={`flex flex-1 flex-col rounded-[32px] border border-blue-100 bg-[linear-gradient(180deg,rgba(248,250,252,0.96)_0%,rgba(239,246,255,0.92)_100%)] shadow-[0_24px_70px_-50px_rgba(37,99,235,0.55)] ${isPresentationMode ? '' : 'p-5 md:p-6'}`}
+                  className={`flex flex-1 flex-col rounded-[28px] border border-blue-100 bg-[linear-gradient(180deg,rgba(248,250,252,0.96)_0%,rgba(239,246,255,0.92)_100%)] shadow-[0_24px_70px_-50px_rgba(37,99,235,0.55)] ${isPresentationMode ? '' : 'p-4 sm:p-5 xl:p-6'}`}
                   style={isPresentationMode ? { padding: presentationBlockPadding } : undefined}
                 >
                   <div
-                    className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between"
+                    className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"
                     style={isPresentationMode ? { gap: presentationLargeGap } : undefined}
                   >
                     <div className="min-w-0">
-                      <p className="font-medium text-slate-500" style={{ fontSize: presentationLabelSize }}>
+                      <p
+                        className="font-medium text-slate-500"
+                        style={{ fontSize: isPresentationMode ? presentationLabelSize : dashboardBodySize }}
+                      >
                         {activeSlide.percentageLabel}
                       </p>
-                      <div className={`mt-2 font-black leading-none ${progressTextClass}`} style={{ fontSize: `${layoutConfig.titleSize * 2.15 * resultScale}px` }}>
+                      <div
+                        className={`mt-2 font-black leading-none ${progressTextClass}`}
+                        style={{ fontSize: isPresentationMode ? `${layoutConfig.titleSize * 2.15 * resultScale}px` : dashboardHeroPercentSize }}
+                      >
                         {displayPercent.toFixed(percentDecimals)}%
                       </div>
-                      <p className="mt-3 text-slate-500" style={{ fontSize: presentationBodySize }}>
+                      <p
+                        className="mt-3 max-w-xl text-slate-500"
+                        style={{ fontSize: isPresentationMode ? presentationBodySize : dashboardBodySize }}
+                      >
                         {getPerformanceLabel(headerPercent)}
                       </p>
                     </div>
 
-                    <div className="relative flex flex-1 items-center justify-center lg:max-w-[260px]" style={{ minHeight: `${170 * resultScale}px` }}>
+                    <div
+                      className="relative flex flex-1 items-center justify-center lg:max-w-[280px]"
+                      style={{ minHeight: isPresentationMode ? `${170 * resultScale}px` : `${190 * resultScale}px` }}
+                    >
                       <div ref={confettiRef} className="absolute inset-0 pointer-events-none" />
                       {!showResult && !facesAnimating && (
                         <div className="absolute inset-0 flex items-center justify-center">
                           <div className="grid grid-cols-2" style={{ gap: presentationGap }}>
                             {faces.map((face, index) => (
                               <div key={index} className="flex items-center justify-center">
-                                <div className={`rounded-full ${face.bg} p-1 shadow-lg`} style={{ width: `${80 * resultScale}px`, height: `${80 * resultScale}px` }}>
+                                  <div
+                                    className={`rounded-full ${face.bg} p-1 shadow-lg`}
+                                    style={{
+                                      width: isPresentationMode ? `${80 * resultScale}px` : `${88 * resultScale}px`,
+                                      height: isPresentationMode ? `${80 * resultScale}px` : `${88 * resultScale}px`,
+                                    }}
+                                  >
                                   <img src={face.img} alt="Faixa de resultado" className="h-full w-full rounded-full bg-white object-cover" />
                                 </div>
                               </div>
@@ -827,17 +945,32 @@ export default function ThermometerDisplay() {
                       {(showResult || facesAnimating) && (
                         <div className="absolute inset-0 flex items-center justify-center">
                           {facesAnimating ? (
-                          <Hourglass className="animate-spin-slow text-blue-500" style={{ width: `${80 * resultScale}px`, height: `${80 * resultScale}px` }} />
+                          <Hourglass
+                            className="animate-spin-slow text-blue-500"
+                            style={{
+                              width: isPresentationMode ? `${80 * resultScale}px` : `${88 * resultScale}px`,
+                              height: isPresentationMode ? `${80 * resultScale}px` : `${88 * resultScale}px`,
+                            }}
+                          />
                         ) : (
                           <div className={`flex flex-col items-center gap-4 ${isExportingPdf ? '' : 'animate-faceScaleIn'}`}>
-                              <div className={`rounded-full ${faces[headerFaceIndex].bg} p-2 shadow-2xl ring-8 ring-white/80`} style={{ width: `${144 * resultScale}px`, height: `${144 * resultScale}px` }}>
+                              <div
+                                className={`rounded-full ${faces[headerFaceIndex].bg} p-2 shadow-2xl ring-8 ring-white/80`}
+                                style={{
+                                  width: isPresentationMode ? `${144 * resultScale}px` : `${156 * resultScale}px`,
+                                  height: isPresentationMode ? `${144 * resultScale}px` : `${156 * resultScale}px`,
+                                }}
+                              >
                                 <img
                                   src={faces[headerFaceIndex].img}
                                   alt="Resultado"
                                   className="h-full w-full rounded-full bg-white object-cover"
                                 />
                               </div>
-                              <div className={`font-black ${progressTextClass} drop-shadow-sm`} style={{ fontSize: `${36 * resultScale}px` }}>
+                              <div
+                                className={`font-black ${progressTextClass} drop-shadow-sm`}
+                                style={{ fontSize: isPresentationMode ? `${36 * resultScale}px` : `${40 * resultScale}px` }}
+                              >
                                 {displayPercent.toFixed(percentDecimals)}%
                               </div>
                             </div>
@@ -848,11 +981,14 @@ export default function ThermometerDisplay() {
                   </div>
 
                   <div className="mt-4">
-                    <div className="mb-2 flex items-center justify-between font-medium text-slate-500" style={{ fontSize: presentationMetaSize }}>
+                    <div
+                      className="mb-2 flex items-center justify-between font-medium text-slate-500"
+                      style={{ fontSize: isPresentationMode ? presentationMetaSize : dashboardMetaSize }}
+                    >
                       <span>0%</span>
                       <span>100%</span>
                     </div>
-                    <div className="h-10 overflow-hidden rounded-full bg-slate-200 shadow-inner">
+                    <div className="h-9 overflow-hidden rounded-full bg-slate-200 shadow-inner sm:h-10">
                       <div
                         className={`h-full rounded-full bg-gradient-to-r ${progressFillClass} ${isExportingPdf ? '' : 'transition-[width] duration-700 ease-out animate-heat'}`}
                         style={{ width: `${Math.min(showResult ? displayPercent : 0, 100)}%` }}
@@ -868,8 +1004,13 @@ export default function ThermometerDisplay() {
                       className="rounded-2xl bg-white/70 px-4 py-3 text-slate-500 shadow-sm"
                       style={isPresentationMode ? { padding: presentationCardPadding } : undefined}
                     >
-                      <div className="font-medium" style={{ fontSize: presentationMetaSize }}>Leitura rápida</div>
-                      <div className="mt-1" style={{ fontSize: presentationBodySize }}>
+                      <div
+                        className="font-medium"
+                        style={{ fontSize: isPresentationMode ? presentationMetaSize : dashboardMetaSize }}
+                      >
+                        Leitura rápida
+                      </div>
+                      <div style={{ fontSize: isPresentationMode ? presentationBodySize : dashboardBodySize }} className="mt-1">
                         {activeSlide.primaryLabel}: <span className="font-bold text-slate-900">{activeSlide.primaryValue}</span>
                       </div>
                     </div>
@@ -880,7 +1021,11 @@ export default function ThermometerDisplay() {
                           ? 'bg-gradient-to-r from-slate-500 to-slate-600'
                           : 'animate-pulse-slow bg-gradient-to-r from-blue-600 to-blue-500'
                       }`}
-                      style={isPresentationMode ? { padding: presentationButtonPadding, fontSize: presentationButtonTextSize } : undefined}
+                      style={
+                        isPresentationMode
+                          ? { padding: presentationButtonPadding, fontSize: presentationButtonTextSize }
+                          : { fontSize: dashboardButtonTextSize }
+                      }
                     >
                       {showResult ? 'Ocultar Resultado' : 'Mostrar Resultado com Carinhas'}
                     </button>
@@ -894,24 +1039,29 @@ export default function ThermometerDisplay() {
 
       {!isPresentationMode && layoutConfig.showFooterSummary && (
       <footer className="flex-none border-t border-blue-100 bg-white/82 backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-[1500px] flex-wrap gap-2 px-4 py-2 md:px-8">
-          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            Membros da Igreja: <span className="font-bold text-slate-900">{normalizedData.totalMembers}</span>
+        <div className="mx-auto flex w-full max-w-[1500px] flex-wrap gap-2 px-3 py-2.5 sm:px-5 lg:px-8">
+          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+            Membros Matriculados: <span className="font-bold text-slate-900">{normalizedData.totalMembers}</span>
           </div>
-          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            Alunos Presentes: <span className="font-bold text-slate-900">{normalizedData.membersPresent}</span>
+          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+            Membros Presentes: <span className="font-bold text-slate-900">{normalizedData.membersPresent}</span>
           </div>
-          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            Estudaram a Lição: <span className="font-bold text-slate-900">{normalizedData.communion}</span>
+          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+            Estudos Diários: <span className="font-bold text-slate-900">{normalizedData.communion}</span>
           </div>
-          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            Participaram do PG: <span className="font-bold text-slate-900">{normalizedData.smallGroup}</span>
+          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+            Pequenos Grupos: <span className="font-bold text-slate-900">{normalizedData.smallGroup}</span>
           </div>
-          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            Deram Estudos Bíblicos: <span className="font-bold text-slate-900">{normalizedData.biblicalStudies}</span>
+          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+            Estudos Bíblicos: <span className="font-bold text-slate-900">{normalizedData.biblicalStudies}</span>
           </div>
-          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-            Ofertas: <span className="font-bold text-slate-900">{formatCurrency(normalizedData.weeklyAverage)}</span> / {formatCurrency(normalizedData.weeklyGoal)}
+          {layoutConfig.showProjectsSlide && (
+            <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+              Projetos Sociais: <span className="font-bold text-slate-900">{normalizedData.projects}</span>
+            </div>
+          )}
+          <div className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+            Ofertas: <span className="font-bold text-slate-900">{formatCurrency(normalizedData.weeklyAverage)}</span> / Meta {formatCurrency(normalizedData.weeklyGoal)}
           </div>
         </div>
       </footer>

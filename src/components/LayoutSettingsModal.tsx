@@ -39,6 +39,7 @@ export default function LayoutSettingsModal({
         resultScale: 0.92,
         showFooterSummary: true,
         showPresentationCards: false,
+        showProjectsSlide: true,
         stackLeftCards: true,
       });
       return;
@@ -54,6 +55,7 @@ export default function LayoutSettingsModal({
       resultScale: 1.15,
       showFooterSummary: false,
       showPresentationCards: true,
+      showProjectsSlide: true,
       stackLeftCards: false,
     });
   };
@@ -228,6 +230,18 @@ export default function LayoutSettingsModal({
                 type="checkbox"
                 checked={config.showPresentationCards}
                 onChange={(e) => handleToggle('showPresentationCards', e.target.checked)}
+                className="h-5 w-5 accent-blue-600"
+              />
+            </label>
+            <label className="flex items-center justify-between rounded-2xl border border-gray-200 px-4 py-3">
+              <div>
+                <p className="text-sm font-medium text-gray-700">Mostrar Slide de Projetos Sociais</p>
+                <p className="text-xs text-gray-500">Exibe ou oculta o indicador Projetos Sociais na apresentação.</p>
+              </div>
+              <input
+                type="checkbox"
+                checked={config.showProjectsSlide}
+                onChange={(e) => handleToggle('showProjectsSlide', e.target.checked)}
                 className="h-5 w-5 accent-blue-600"
               />
             </label>
